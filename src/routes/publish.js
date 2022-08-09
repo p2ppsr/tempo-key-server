@@ -5,9 +5,9 @@ const knex =
 
 module.exports = {
   type: 'post',
-  path: '/store',
+  path: '/publish',
   knex,
-  summary: 'Use this route to buy a song decryption key',
+  summary: 'Use this route to publish a song decryption key',
   // Parameters given in query string
   parameters: {
     songID: 'abc',
@@ -34,11 +34,11 @@ module.exports = {
       }
       if (!key) {
         return res.status(400).json({
-          status: 'Failed to store key'
+          status: 'Failed to publish key'
         })
       }
       return res.status(200).json({
-        status: 'Key sucessfully purchased!',
+        status: 'Key sucessfully published!',
         result: key.value
       })
     } catch (e) {
