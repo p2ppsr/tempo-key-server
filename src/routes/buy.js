@@ -19,7 +19,7 @@ module.exports = {
   func: async (req, res) => {
     try {
       // Check if a key entry exists already.
-      const key = await knex('key').where({
+      const [key] = await knex('key').where({
         songID: req.query.songID,
         bridgeID: req.query.bridgeID
       }).select('value')

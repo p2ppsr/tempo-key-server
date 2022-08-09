@@ -19,11 +19,11 @@ module.exports = {
   func: async (req, res) => {
     try {
       // Check if a key entry exists already.
-      let key = await knex('key').where({
+      let [key] = await knex('key').where({
         songID: req.query.songID,
         bridgeID: req.query.bridgeID
       }).select('value')
-      if (!key || key.length === 0) {
+      if (!key) {
       // Insert a new key entry
         key = await knex('key').insert({
           songID: req.query.songID,
