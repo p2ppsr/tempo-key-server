@@ -5,9 +5,9 @@ const knex =
 
 module.exports = {
   type: 'post',
-  path: '/publish',
+  path: '/buy',
   knex,
-  summary: 'Use this route to publish a song decryption key',
+  summary: 'Use this route to buy a song decryption key',
   // Parameters given in query string
   parameters: {
     songID: 'abc',
@@ -19,29 +19,22 @@ module.exports = {
   func: async (req, res) => {
     try {
       // Check if a key entry exists already.
-      let key = await knex('key').where({
+      const key = await knex('key').where({
         songID: req.query.songID,
         bridgeID: req.query.bridgeID
       }).select('value')
-      if (!key || key.length === 0) {
-      // Insert a new key entry
-        key = await knex('key').insert({
-          songID: req.query.songID,
-          bridgeID: req.query.bridgeID,
-          value: req.query.value
-        })
-      } else {
-        return res.status(400).json({
-          status: 'Key already published to key server!'
-        })
-      }
+
       if (!key) {
         return res.status(400).json({
-          status: 'Failed to publish key'
+          status: 'Key not found'
         })
       }
+
+      // TODO: add payment
+
       return res.status(200).json({
-        status: 'Key sucessfully published!'
+        status: 'Key sucessfully purchased!',
+        result: key.value
       })
     } catch (e) {
       res.status(500).json({
