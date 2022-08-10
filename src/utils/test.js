@@ -12,5 +12,17 @@ const publishKey = async () => {
   })
   return JSON.parse(Buffer.from(response.body).toString('utf8'))
 }
+const buyKey = async () => {
+  const response = await new Authrite().request('http://localhost:8080/buy', {
+    body: {
+      songURL: 'XUTBG1hsvE4ANoVczeLRBjorb7AVe18V4EnouBxfJ2ErgiM2J9SC'
+    },
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  return JSON.parse(Buffer.from(response.body).toString('utf8'))
+}
 
-module.exports = { publishKey }
+module.exports = { publishKey, buyKey }
