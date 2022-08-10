@@ -2,9 +2,7 @@
 exports.up = async knex => {
   await knex.schema.createTable('key', table => {
     table.increments('keyID')
-    table.timestamps()
-    table.string('bridgeID')
-    table.string('songID')
+    table.string('songURL')
     table.string('value')
   })
 }

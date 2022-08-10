@@ -2,6 +2,7 @@ const knex =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging'
     ? require('knex')(require('../../knexfile.js').production)
     : require('knex')(require('../../knexfile.js').development)
+const decryptionValidator = require('../utils/decryptionValidator')
 
 module.exports = {
   type: 'post',
@@ -10,9 +11,8 @@ module.exports = {
   summary: 'Use this route to publish a song decryption key',
   // Parameters given in query string
   parameters: {
-    songID: 'abc',
-    bridgeID: 'xyz',
-    key: ''
+    songURL: 'abc', // A UHRP url of the song to decrypt
+    key: '' // A 32 byte base64 string.
   },
   exampleResponse: {
   },
@@ -20,24 +20,29 @@ module.exports = {
     try {
       // Check if a key entry exists already.
       let [key] = await knex('key').where({
-        songID: req.query.songID,
-        bridgeID: req.query.bridgeID
+        songURL: req.query.songURL
       }).select('value')
       if (!key) {
-      // Insert a new key entry
-        key = await knex('key').insert({
-          songID: req.query.songID,
-          bridgeID: req.query.bridgeID,
-          value: req.query.value
+        // Validate Song Decryption
+        const isValid = await decryptionValidator.isValid(req.query.songURL, req.query.key)
+        if (!isValid) {
+          return res.status(400).json({
+            status: 'Failed to validate decryption key!'
+          })
+        }
+        // Insert a new key entry
+        [key] = await knex('key').insert({
+          songURL: req.query.songURL,
+          value: req.query.key
         })
+        if (!key) {
+          return res.status(400).json({
+            status: 'Failed to publish key'
+          })
+        }
       } else {
         return res.status(400).json({
           status: 'Key already published to key server!'
-        })
-      }
-      if (!key) {
-        return res.status(400).json({
-          status: 'Failed to publish key'
         })
       }
       return res.status(200).json({
