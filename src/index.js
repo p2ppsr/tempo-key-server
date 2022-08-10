@@ -5,6 +5,7 @@ const prettyjson = require('prettyjson')
 const routes = require('./routes')
 const HTTP_PORT = process.env.PORT || process.env.HTTP_PORT || 8080
 const ROUTING_PREFIX = process.env.ROUTING_PREFIX || ''
+const authrite = require('authrite-express')
 
 const app = express()
 app.use(bodyparser.json())
@@ -24,11 +25,10 @@ app.use((req, res, next) => {
 // This allows the API to be used when CORS is enforced
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
-  )
-  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS, POST')
+  res.header('Access-Control-Allow-Headers', '*')
+  res.header('Access-Control-Allow-Methods', '*')
+  res.header('Access-Control-Expose-Headers', '*')
+  res.header('Access-Control-Allow-Private-Network', 'true')
   next()
 })
 
@@ -55,6 +55,12 @@ app.options('*', (req, res) =>
     message: 'Send a POST request to see the results.'
   })
 )
+
+// Authrite is enforced from here forward
+app.use(authrite.middleware({
+  serverPrivateKey: process.env.SERVER_PRIVATE_KEY,
+  baseUrl: process.env.HOSTING_DOMAIN
+}))
 
 // This adds all the API routes
 routes.forEach((route) => {

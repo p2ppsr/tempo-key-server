@@ -8,7 +8,6 @@ module.exports = {
   path: '/buy',
   knex,
   summary: 'Use this route to buy a song decryption key',
-  // Parameters given in query string
   parameters: {
     songURL: 'abc',
     key: ''
@@ -19,7 +18,7 @@ module.exports = {
     try {
       // Check if a key entry exists already.
       const [key] = await knex('key').where({
-        songURL: req.query.songURL
+        songURL: req.body.songURL
       }).select('value')
 
       if (!key) {

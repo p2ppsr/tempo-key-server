@@ -9,7 +9,6 @@ module.exports = {
   path: '/publish',
   knex,
   summary: 'Use this route to publish a song decryption key',
-  // Parameters given in query string
   parameters: {
     songURL: 'abc', // A UHRP url of the song to decrypt
     key: '' // A 32 byte base64 string.
@@ -20,11 +19,11 @@ module.exports = {
     try {
       // Check if a key entry exists already.
       let [key] = await knex('key').where({
-        songURL: req.query.songURL
+        songURL: req.body.songURL
       }).select('value')
       if (!key) {
         // Validate Song Decryption
-        const isValid = await decryptionValidator.isValid(req.query.songURL, req.query.key)
+        const isValid = await decryptionValidator.isValid(req.body.songURL, req.body.key)
         if (!isValid) {
           return res.status(400).json({
             status: 'Failed to validate decryption key!'
@@ -32,8 +31,8 @@ module.exports = {
         }
         // Insert a new key entry
         [key] = await knex('key').insert({
-          songURL: req.query.songURL,
-          value: req.query.key
+          songURL: req.body.songURL,
+          value: req.body.key
         })
         if (!key) {
           return res.status(400).json({

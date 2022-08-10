@@ -1,3 +1,4 @@
 module.exports = [
-  require('./publish')
+  require('./publish'),
+  require('./buy')
 ]
