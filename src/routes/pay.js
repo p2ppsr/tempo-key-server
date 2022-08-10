@@ -5,17 +5,24 @@ const knex =
 
 module.exports = {
   type: 'post',
-  path: '/buy',
+  path: '/pay',
   knex,
-  summary: 'Use this route to buy a song decryption key',
+  summary: 'Use this route to submit proof of payment for a song decryption key',
   parameters: {
     songURL: 'abc',
-    key: ''
+    referenceNumber: 'no payment' // payment reference number to validate
   },
   exampleResponse: {
   },
   func: async (req, res) => {
     try {
+      // TODO: validate reference number provided
+      if (req.body.referenceNumber === 'no payment') {
+        return res.status(400).json({
+          status: 'Payment not provided!'
+        })
+      }
+
       // Check if a key entry exists already.
       const [key] = await knex('key').where({
         songURL: req.body.songURL
@@ -26,8 +33,6 @@ module.exports = {
           status: 'Key not found'
         })
       }
-
-      // TODO: add payment
 
       return res.status(200).json({
         status: 'Key sucessfully purchased!',

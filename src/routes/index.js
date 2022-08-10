@@ -1,4 +1,5 @@
 module.exports = [
   require('./publish'),
-  require('./buy')
+  require('./pay'),
+  require('./invoice')
 ]

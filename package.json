@@ -14,6 +14,7 @@
   },
   "license": "Open BSV",
   "dependencies": {
+    "@babbage/sdk": "^0.2.6",
     "@cwi/crypto": "^0.1.0",
     "@peculiar/webcrypto": "^1.4.0",
     "authrite-express": "^0.1.5",
@@ -24,12 +25,14 @@
     "isomorphic-fetch": "^3.0.0",
     "knex": "^2.2.0",
     "mysql": "^2.18.1",
+    "paymail": "^0.1.1",
     "prettyjson": "^1.2.1",
-    "sqlite3": "^5.0.11"
+    "sqlite3": "^5.0.11",
+    "utxoninja": "^0.2.25"
   },
   "devDependencies": {
+    "authrite-js": "^0.1.11",
     "ejs": "^3.1.8",
-    "standard": "^17.0.0",
-    "authrite-js": "^0.1.11"
+    "standard": "^17.0.0"
   }
 }
