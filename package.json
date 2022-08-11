@@ -25,7 +25,7 @@
     "isomorphic-fetch": "^3.0.0",
     "knex": "^2.2.0",
     "mysql": "^2.18.1",
-    "paymail": "^0.1.1",
+    "paymail": "^0.1.2",
     "prettyjson": "^1.2.1",
     "sqlite3": "^5.0.11",
     "utxoninja": "^0.2.25"
