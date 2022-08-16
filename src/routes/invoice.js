@@ -24,12 +24,16 @@ module.exports = {
           dojoURL: 'http://localhost:3102' // TODO: update for prod
         }
       })
+      const [key] = await knex('key').where({
+        songURL: req.body.songURL
+      }).select('keyID')
 
-      const [invoice] = await knex('invoice').insert({
-        songURL: req.body.songURL,
+      await knex('invoice').insert({
+        keyID: key.keyID,
         identityKey: req.authrite.identityKey,
         paymail: null,
-        amount: AMOUNT
+        amount: AMOUNT,
+        processed: false
       })
 
       // Get the server's paymail

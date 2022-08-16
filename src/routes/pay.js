@@ -25,8 +25,19 @@ module.exports = {
         }
       })
 
+      // Check if a key entry exists already.
+      const [key] = await knex('key').where({
+        songURL: req.body.songURL
+      }).select('value', 'keyID')
+
+      if (!key) {
+        return res.status(400).json({
+          status: 'Key not found'
+        })
+      }
+
       const [invoice] = await knex('invoice').where({
-        songURL: req.body.songURL,
+        keyID: key.keyID,
         identityKey: req.authrite.identityKey
       })
       if (!invoice) {
@@ -43,19 +54,8 @@ module.exports = {
       }
       // Update invoice
       await knex('invoice')
-        .where({ songURL: req.body.songURL })
-        .update({ paymail: req.body.paymail, referenceNumber: req.body.referenceNumber })
-
-      // Check if a key entry exists already.
-      const [key] = await knex('key').where({
-        songURL: req.body.songURL
-      }).select('value')
-
-      if (!key) {
-        return res.status(400).json({
-          status: 'Key not found'
-        })
-      }
+        .where({ keyID: key.keyID, identityKey: req.authrite.identityKey, referenceNumber: null, paymail: null, processed: false })
+        .update({ paymail: req.body.paymail, referenceNumber: req.body.referenceNumber, processed: true })
 
       return res.status(200).json({
         status: 'Key sucessfully purchased!',
