@@ -1,3 +1,5 @@
+const e = require('express')
+const Ninja = require('utxoninja')
 const knex =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging'
     ? require('knex')(require('../../knexfile.js').production)
@@ -16,12 +18,33 @@ module.exports = {
   },
   func: async (req, res) => {
     try {
-      // TODO: validate reference number provided
-      if (req.body.referenceNumber === 'no payment') {
+      const ninja = new Ninja({
+        privateKey: process.env.SERVER_PRIVATE_KEY,
+        config: {
+          dojoURL: 'http://localhost:3102' // TODO: update for prod
+        }
+      })
+
+      const [invoice] = await knex('invoice').where({
+        songURL: req.body.songURL,
+        identityKey: req.authrite.identityKey
+      })
+      if (!invoice) {
+        return res.status(400).json({
+          status: 'Invoice not found!'
+        })
+      }
+
+      const processed = await ninja.verifyIncomingTransaction({ senderPaymail: req.body.paymail, senderIdentityKey: req.authrite.identityKey, referenceNumber: req.body.referenceNumber, amount: invoice.amount })
+      if (!processed) {
         return res.status(400).json({
           status: 'Payment not provided!'
         })
       }
+      // Update invoice
+      await knex('invoice')
+        .where({ songURL: req.body.songURL })
+        .update({ paymail: req.body.paymail, referenceNumber: req.body.referenceNumber })
 
       // Check if a key entry exists already.
       const [key] = await knex('key').where({

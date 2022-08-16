@@ -4,6 +4,8 @@ const knex =
     ? require('knex')(require('../../knexfile.js').production)
     : require('knex')(require('../../knexfile.js').development)
 
+const AMOUNT = 100
+
 module.exports = {
   type: 'post',
   path: '/invoice',
@@ -17,17 +19,25 @@ module.exports = {
   func: async (req, res) => {
     try {
       const ninja = new Ninja({
-        privateKey: process.env.SERVER_PRIVATE_KEY,
+        privateKey: '6dcc124be5f382be631d49ba12f61adbce33a5ac14f6ddee12de25272f943f8b',
         config: {
-          dojoURL: 'https://staging-dojo.babbage.systems' // TODO: update for prod
+          dojoURL: 'http://localhost:3102' // TODO: update for prod
         }
       })
+
+      const [invoice] = await knex('invoice').insert({
+        songURL: req.body.songURL,
+        identityKey: req.authrite.identityKey,
+        paymail: null,
+        amount: AMOUNT
+      })
+
       // Get the server's paymail
       const paymail = await ninja.getPaymail()
       return res.status(200).json({
         status: 'success',
         paymail,
-        amount: 100 // ?
+        amount: AMOUNT // ?
       })
     } catch (e) {
       res.status(500).json({
