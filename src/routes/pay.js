@@ -18,38 +18,47 @@ module.exports = {
   },
   func: async (req, res) => {
     try {
+      // Create a new ninja for the server
       const ninja = new Ninja({
         privateKey: process.env.SERVER_PRIVATE_KEY,
         config: {
-          dojoURL: 'http://localhost:3102' // TODO: update for prod
+          dojoURL: process.env.DOJO_URL
         }
       })
 
-      // Check if a key entry exists already.
+      // Find valid decryption key
       const [key] = await knex('key').where({
         songURL: req.body.songURL
       }).select('value', 'keyID')
 
       if (!key) {
         return res.status(400).json({
-          status: 'Key not found'
+          status: 'error',
+          code: 'ERR_KEY_NOT_FOUND',
+          description: 'Decryption key for specified song not found!'
         })
       }
 
+      // Find valid purchase invoice
       const [invoice] = await knex('invoice').where({
         keyID: key.keyID,
         identityKey: req.authrite.identityKey
       })
       if (!invoice) {
         return res.status(400).json({
-          status: 'Invoice not found!'
+          status: 'error',
+          code: 'ERR_INVOICE_NOT_FOUND',
+          description: 'An invoice for the specified purchase was not found!'
         })
       }
 
+      // Verify the payment
       const processed = await ninja.verifyIncomingTransaction({ senderPaymail: req.body.paymail, senderIdentityKey: req.authrite.identityKey, referenceNumber: req.body.referenceNumber, amount: invoice.amount })
       if (!processed) {
         return res.status(400).json({
-          status: 'Payment not provided!'
+          status: 'error',
+          code: 'ERR_PAYMENT_INVALID',
+          description: 'Could not validate payment!'
         })
       }
       // Update invoice
@@ -57,6 +66,7 @@ module.exports = {
         .where({ keyID: key.keyID, identityKey: req.authrite.identityKey, referenceNumber: null, paymail: null, processed: false })
         .update({ paymail: req.body.paymail, referenceNumber: req.body.referenceNumber, processed: true })
 
+      // Return the decryption key to the sender
       return res.status(200).json({
         status: 'Key sucessfully purchased!',
         result: key.value

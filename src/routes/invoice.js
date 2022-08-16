@@ -4,6 +4,7 @@ const knex =
     ? require('knex')(require('../../knexfile.js').production)
     : require('knex')(require('../../knexfile.js').development)
 
+// TODO: Determine best amount
 const AMOUNT = 100
 
 module.exports = {
@@ -18,16 +19,26 @@ module.exports = {
   },
   func: async (req, res) => {
     try {
+      // Create a new ninja for the server
       const ninja = new Ninja({
-        privateKey: '6dcc124be5f382be631d49ba12f61adbce33a5ac14f6ddee12de25272f943f8b',
+        privateKey: process.env.SERVER_PRIVATE_KEY,
         config: {
-          dojoURL: 'http://localhost:3102' // TODO: update for prod
+          dojoURL: process.env.DOJO_URL
         }
       })
+      // Find valid decryption key
       const [key] = await knex('key').where({
         songURL: req.body.songURL
       }).select('keyID')
+      if (!key) {
+        return res.status(400).json({
+          status: 'error',
+          code: 'ERR_KEY_NOT_FOUND',
+          description: 'Decryption key for specified song not found!'
+        })
+      }
 
+      // Create a new invoice record
       await knex('invoice').insert({
         keyID: key.keyID,
         identityKey: req.authrite.identityKey,
@@ -38,10 +49,11 @@ module.exports = {
 
       // Get the server's paymail
       const paymail = await ninja.getPaymail()
+      // Return the required info to the sender
       return res.status(200).json({
         status: 'success',
         paymail,
-        amount: AMOUNT // ?
+        amount: AMOUNT
       })
     } catch (e) {
       res.status(500).json({

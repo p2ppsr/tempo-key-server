@@ -26,7 +26,9 @@ module.exports = {
         const isValid = await decryptionValidator.isValid(req.body.songURL, req.body.key)
         if (!isValid) {
           return res.status(400).json({
-            status: 'Failed to validate decryption key!'
+            status: 'error',
+            code: 'ERR_INVALID_DECRYPTION_KEY',
+            description: 'Failed to validate decryption key!'
           })
         }
         // Insert a new key entry
@@ -35,13 +37,14 @@ module.exports = {
           value: req.body.key
         })
         if (!key) {
-          return res.status(400).json({
-            status: 'Failed to publish key'
-          })
+          // Throw an error to catch and return a 500 response
+          throw new Error('An internal error has occurred.')
         }
       } else {
         return res.status(400).json({
-          status: 'Key already published to key server!'
+          status: 'error',
+          code: 'ERR_DUPLICATE_DECRYPTION_KEY',
+          description: 'Key already published to key server!'
         })
       }
       return res.status(200).json({

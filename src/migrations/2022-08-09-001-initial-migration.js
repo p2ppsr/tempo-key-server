@@ -9,7 +9,7 @@ exports.up = async knex => {
     table.increments('invoiceID')
     table.string('paymail')
     table.string('identityKey')
-    table.string('referenceNumber') // .unique
+    table.string('referenceNumber').unique()
     table.integer('keyID').unsigned().references('keyID').inTable('key')
     table.integer('amount')
     table.boolean('processed')
