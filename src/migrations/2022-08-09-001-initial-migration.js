@@ -7,6 +7,7 @@ exports.up = async knex => {
   })
   await knex.schema.createTable('invoice', table => {
     table.increments('invoiceID')
+    table.string('orderID')
     table.string('paymail')
     table.string('identityKey')
     table.string('referenceNumber').unique()

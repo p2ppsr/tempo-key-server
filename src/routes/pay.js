@@ -12,7 +12,10 @@ module.exports = {
   summary: 'Use this route to submit proof of payment for a song decryption key',
   parameters: {
     songURL: 'abc',
-    referenceNumber: 'no payment' // payment reference number to validate
+    referenceNumber: 'xyz', // payment reference number to validate,
+    description: '',
+    paymail: '',
+    orderID: 'abc'
   },
   exampleResponse: {
   },
@@ -42,7 +45,8 @@ module.exports = {
       // Find valid purchase invoice
       const [invoice] = await knex('invoice').where({
         keyID: key.keyID,
-        identityKey: req.authrite.identityKey
+        identityKey: req.authrite.identityKey,
+        orderID: req.body.orderID
       })
       if (!invoice) {
         return res.status(400).json({
@@ -53,7 +57,7 @@ module.exports = {
       }
 
       // Verify the payment
-      const processed = await ninja.verifyIncomingTransaction({ senderPaymail: req.body.paymail, senderIdentityKey: req.authrite.identityKey, referenceNumber: req.body.referenceNumber, amount: invoice.amount })
+      const processed = await ninja.verifyIncomingTransaction({ senderPaymail: req.body.paymail, senderIdentityKey: req.authrite.identityKey, referenceNumber: req.body.referenceNumber, description: req.body.description, amount: invoice.amount })
       if (!processed) {
         return res.status(400).json({
           status: 'error',
@@ -63,7 +67,7 @@ module.exports = {
       }
       // Update invoice
       await knex('invoice')
-        .where({ keyID: key.keyID, identityKey: req.authrite.identityKey, referenceNumber: null, paymail: null, processed: false })
+        .where({ keyID: key.keyID, identityKey: req.authrite.identityKey, orderID: req.body.orderID, referenceNumber: null, paymail: null, processed: false })
         .update({ paymail: req.body.paymail, referenceNumber: req.body.referenceNumber, processed: true })
 
       // Return the decryption key to the sender

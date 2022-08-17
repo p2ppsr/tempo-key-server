@@ -1,4 +1,5 @@
 const Ninja = require('utxoninja')
+const crypto = require('crypto')
 const knex =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging'
     ? require('knex')(require('../../knexfile.js').production)
@@ -39,7 +40,9 @@ module.exports = {
       }
 
       // Create a new invoice record
+      const ORDER_ID = crypto.randomBytes(32).toString('base64')
       await knex('invoice').insert({
+        orderID: ORDER_ID,
         keyID: key.keyID,
         identityKey: req.authrite.identityKey,
         paymail: null,
@@ -53,7 +56,8 @@ module.exports = {
       return res.status(200).json({
         status: 'success',
         paymail,
-        amount: AMOUNT
+        amount: AMOUNT,
+        orderID: ORDER_ID
       })
     } catch (e) {
       res.status(500).json({
