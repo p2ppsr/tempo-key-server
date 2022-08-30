@@ -29,7 +29,7 @@ jobs:
       - run: CI=true npm run build
       - uses: RafikFarhad/push-to-gcr-github-action@v4.1
         with:
-          gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+          gcloud_service_key: ${{ secrets.DOCKER_REGISTRY_PUSH_KEY }}
           registry: ${{ env.GCR_HOST }}
           project_id: ${{ env.GOOGLE_PROJECT_ID }}
           image_name: ${{ env.GCR_IMAGE_NAME }}
