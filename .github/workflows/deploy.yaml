@@ -40,7 +40,7 @@ jobs:
           IMAGE: "${{ env.GCR_HOST }}/${{ env.GOOGLE_PROJECT_ID }}/${{ env.GCR_IMAGE_NAME }}:${{ env.CURRENT_BRANCH }}-${{ github.sha }}"
           SERVICE: ${{ env.CURRENT_BRANCH =='production' && 'prod-tempo-keyserver' || 'staging-tempo-keyserver' }}
           MIGRATE_KEY: ${{ secrets.MIGRATE_KEY }}
-          NODE_ENV:     ${{ env.CURRENT_BRANCH =='production' && secrets.PROD_NODE_ENV || secrets.STAGING_NODE_ENV }}
+          NODE_ENV:     ${{ env.CURRENT_BRANCH =='production' && 'production' || 'staging' }}
           ROUTING_PREFIX:     ${{ env.CURRENT_BRANCH =='production' && secrets.PROD_ROUTING_PREFIX || secrets.STAGING_ROUTING_PREFIX }}
           KNEX_DB_CONNECTION: ${{ env.CURRENT_BRANCH =='production' && secrets.PROD_KNEX_DB_CONNECTION || secrets.STAGING_KNEX_DB_CONNECTION }}
           KNEX_DB_CLIENT: mysql
