@@ -1,12 +1,14 @@
-const Ninja = require('utxoninja')
 const crypto = require('crypto')
 const knex =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging'
     ? require('knex')(require('../../knexfile.js').production)
     : require('knex')(require('../../knexfile.js').development)
+const bsv = require('bsv')
 
 // TODO: Determine best amount
 const AMOUNT = 100
+
+const { SERVER_PRIVATE_KEY } = process.env
 
 module.exports = {
   type: 'post',
@@ -17,16 +19,13 @@ module.exports = {
     songURL: 'abc'
   },
   exampleResponse: {
+    status: 'success',
+    amount: 1337,
+    identityKey: 'adfsfdf',
+    orderID: 'asdfldsf=s=sfsd'
   },
   func: async (req, res) => {
     try {
-      // Create a new ninja for the server
-      const ninja = new Ninja({
-        privateKey: process.env.SERVER_PRIVATE_KEY,
-        config: {
-          dojoURL: process.env.DOJO_URL
-        }
-      })
       // Find valid decryption key
       const [key] = await knex('key').where({
         songURL: req.body.songURL
@@ -45,17 +44,15 @@ module.exports = {
         orderID: ORDER_ID,
         keyID: key.keyID,
         identityKey: req.authrite.identityKey,
-        paymail: null,
         amount: AMOUNT,
         processed: false
       })
 
-      // Get the server's paymail
-      const paymail = await ninja.getPaymail()
       // Return the required info to the sender
       return res.status(200).json({
         status: 'success',
-        paymail,
+        identityKey: bsv.PrivateKey.fromString(SERVER_PRIVATE_KEY)
+          .publicKey.toString(),
         amount: AMOUNT,
         orderID: ORDER_ID
       })

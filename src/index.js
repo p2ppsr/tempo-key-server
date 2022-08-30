@@ -29,7 +29,11 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Methods', '*')
   res.header('Access-Control-Expose-Headers', '*')
   res.header('Access-Control-Allow-Private-Network', 'true')
-  next()
+  if (req.method === 'OPTIONS') {
+    res.send(200)
+  } else {
+    next()
+  }
 })
 
 // This is a simple API request logger
@@ -49,12 +53,10 @@ app.use((req, res, next) => {
 // This makes the documentation site available
 app.use(express.static('public'))
 
-// This avoids issues with pre-flight requests
-app.options('*', (req, res) =>
-  res.status(200).json({
-    message: 'Send a POST request to see the results.'
-  })
-)
+// This adds all the API routes
+routes.preAuthrite.forEach((route) => {
+  app[route.type](`${ROUTING_PREFIX}${route.path}`, route.func)
+})
 
 // Authrite is enforced from here forward
 app.use(authrite.middleware({
@@ -63,7 +65,7 @@ app.use(authrite.middleware({
 }))
 
 // This adds all the API routes
-routes.forEach((route) => {
+routes.postAuthrite.forEach((route) => {
   app[route.type](`${ROUTING_PREFIX}${route.path}`, route.func)
 })
 

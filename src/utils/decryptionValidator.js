@@ -1,7 +1,7 @@
 const { decrypt } = require('@cwi/crypto')
 const { Crypto } = require('@peculiar/webcrypto')
-const fetch = require('isomorphic-fetch')
 global.crypto = new Crypto()
+const { download } = require('nanoseek')
 
 /**
  * @param {string} songURL UHRP url of the song to decrypt
@@ -11,8 +11,7 @@ global.crypto = new Crypto()
 const isValid = async (songURL, key) => {
   try {
     // Fetch the song data
-    const response = await fetch(`http://localhost:3104/data/${songURL}`)
-    const encryptedData = await response.arrayBuffer()
+    const { data: encryptedData } = await download({ URL: songURL })
     const keyAsBuffer = Buffer.from(key, 'base64')
     const decryptionKey = await global.crypto.subtle.importKey(
       'raw',
@@ -24,7 +23,11 @@ const isValid = async (songURL, key) => {
       ['decrypt']
     )
     // Try to decrypt the song data
-    const decryptedData = await decrypt(new Uint8Array(encryptedData), decryptionKey, 'Uint8Array')
+    await decrypt(
+      new Uint8Array(encryptedData),
+      decryptionKey,
+      'Uint8Array'
+    )
     return true
   } catch (error) {
     console.error(error)

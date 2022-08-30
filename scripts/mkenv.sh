@@ -1,14 +1,29 @@
 #!/bin/bash
 
-# Create .env file
-echo "Generating .env file..."
-echo "NODE_ENV=$NODE_ENV" > .env
-echo "ROUTING_PREFIX=$ROUTING_PREFIX" >> .env
-echo "HOSTING_DOMAIN=$HOSTING_DOMAIN" >> .env
-echo "KNEX_DB_CONNECTION=$KNEX_DB_CONNECTION" >> .env
-echo "KNEX_DB_CLIENT=$KNEX_DB_CLIENT" >> .env
+echo "Creating $1"
+echo "apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: $SERVICE
+spec:
+  template:
+    spec:
+      timeoutSeconds: 3540
+      containers:
+      - image: $IMAGE
+        env:" > $1
 
-echo "Generating .npmrc"
-echo "@cwi:registry=https://npm-registry.babbage.systems/" > .npmrc
-echo "//npm-registry.babbage.systems/:_authToken=$CWI_NPM_TOKEN" >> .npmrc
-# cat .npmrc
+echo "Appending environment variables to $1"
+perl -E'
+  say "        - name: $_
+          value: \x27$ENV{$_}\x27" for @ARGV;
+' NODE_ENV \
+    ROUTING_PREFIX \
+    KNEX_DB_CONNECTION \
+    KNEX_DB_CLIENT \
+    SERVER_PRIVATE_KEY \
+    MIGRATE_KEY \
+    DOJO_URL >> $1
+
+echo "Built! Contents of $1:"
+cat $1

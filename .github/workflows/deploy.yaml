@@ -1,0 +1,52 @@
+name: Deployment
+on:
+  push:
+    branches:
+      - master
+      - production
+
+env:
+  CURRENT_BRANCH: ${{ github.ref_name =='production' && 'production' || 'master' }}
+  CWI_NPM_TOKEN: ${{ secrets.CWI_NPM_TOKEN }}
+  GCR_HOST: us.gcr.io
+  GOOGLE_PROJECT_ID: babbage-private
+  GCR_IMAGE_NAME: tempo-key-server
+  
+jobs:
+  build:
+    name: GAE Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+         ref: ${{ env.CURRENT_BRANCH }}
+      - name: Docker Layer Caching
+        uses: satackey/action-docker-layer-caching@v0.0.11
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: CWI_NPM_TOKEN=${{ secrets.CWI_NPM_TOKEN }} npm ci
+      - run: CI=true npm run build
+      - uses: RafikFarhad/push-to-gcr-github-action@v4.1
+        with:
+          gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+          registry: ${{ env.GCR_HOST }}
+          project_id: ${{ env.GOOGLE_PROJECT_ID }}
+          image_name: ${{ env.GCR_IMAGE_NAME }}
+          image_tag: ${{ env.CURRENT_BRANCH }}-${{ github.sha }}
+      - name: "Create service description file"
+        run: "./scripts/mkenv.sh service.${{ env.CURRENT_BRANCH }}.yaml"
+        env:
+          IMAGE: "${{ env.GCR_HOST }}/${{ env.GOOGLE_PROJECT_ID }}/${{ env.GCR_IMAGE_NAME }}:${{ env.CURRENT_BRANCH }}-${{ github.sha }}"
+          SERVICE: ${{ env.CURRENT_BRANCH =='production' && 'prod-tempo-keyserver' || 'staging-tempo-keyserver' }}
+          MIGRATE_KEY: ${{ secrets.MIGRATE_KEY }}
+          NODE_ENV:     ${{ env.CURRENT_BRANCH =='production' && secrets.PROD_NODE_ENV || secrets.STAGING_NODE_ENV }}
+          ROUTING_PREFIX:     ${{ env.CURRENT_BRANCH =='production' && secrets.PROD_ROUTING_PREFIX || secrets.STAGING_ROUTING_PREFIX }}
+          KNEX_DB_CONNECTION: ${{ env.CURRENT_BRANCH =='production' && secrets.PROD_KNEX_DB_CONNECTION || secrets.STAGING_KNEX_DB_CONNECTION }}
+          KNEX_DB_CLIENT:     ${{ env.CURRENT_BRANCH =='production' && secrets.PROD_KNEX_DB_CLIENT || secrets.STAGING_KNEX_DB_CLIENT }}
+          SERVER_PRIVATE_KEY: ${{ env.CURRENT_BRANCH =='production' && secrets.PROD_PRIVATE_KEY || secrets.STAGING_SERVER_PRIVATE_KEY }}
+          DOJO_URL:     ${{ env.CURRENT_BRANCH =='production' && secrets.PROD_DOJO_URL || secrets.STAGING_DOJO_URL }}
+      - uses: google-github-actions/deploy-cloudrun@main
+        with:
+          credentials: ${{ secrets.gcp_deploy_creds }}
+          metadata: "service.${{ env.CURRENT_BRANCH }}.yaml"

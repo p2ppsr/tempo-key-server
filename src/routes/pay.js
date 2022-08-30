@@ -1,4 +1,3 @@
-const e = require('express')
 const Ninja = require('utxoninja')
 const knex =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging'
@@ -11,13 +10,15 @@ module.exports = {
   knex,
   summary: 'Use this route to submit proof of payment for a song decryption key',
   parameters: {
-    songURL: 'abc',
-    referenceNumber: 'xyz', // payment reference number to validate,
-    description: '',
-    paymail: '',
-    orderID: 'abc'
+    songURL: 'The URL of the song associated with the orderID',
+    orderID: 'abc',
+    transaction: 'transaction envelope (rawTx, mapiResponses, inputs, proof), with additional outputs array containing key derivation information',
+    'transaction.outputs': 'An array of outputs descriptors, each including vout, satoshis, derivationPrefix, and derivationSuffix',
+    description: 'Transaction description'
   },
   exampleResponse: {
+    status: 'Key sucessfully purchased!', // !!!!!!!!!!
+    result: 'sjfsdofdjffjo'
   },
   func: async (req, res) => {
     try {
@@ -56,9 +57,20 @@ module.exports = {
         })
       }
 
+      req.body.transaction.outputs = req.body.transaction.outputs.map(x => ({
+        ...x,
+        senderIdentityKey: req.authrite.identityKey
+      }))
+
       // Verify the payment
-      const processed = await ninja.verifyIncomingTransaction({ senderPaymail: req.body.paymail, senderIdentityKey: req.authrite.identityKey, referenceNumber: req.body.referenceNumber, description: req.body.description, amount: invoice.amount })
-      if (!processed) {
+      const processedTransaction = await ninja.submitDirectTransaction({
+        protocol: '3241645161d8',
+        transaction: req.body.transaction,
+        senderIdentityKey: req.authrite.identityKey,
+        note: req.body.description,
+        amount: invoice.amount
+      })
+      if (!processedTransaction) {
         return res.status(400).json({
           status: 'error',
           code: 'ERR_PAYMENT_INVALID',
@@ -67,12 +79,20 @@ module.exports = {
       }
       // Update invoice
       await knex('invoice')
-        .where({ keyID: key.keyID, identityKey: req.authrite.identityKey, orderID: req.body.orderID, referenceNumber: null, paymail: null, processed: false })
-        .update({ paymail: req.body.paymail, referenceNumber: req.body.referenceNumber, processed: true })
+        .where({
+          keyID: key.keyID,
+          identityKey: req.authrite.identityKey,
+          orderID: req.body.orderID,
+          processed: false
+        })
+        .update({
+          referenceNumber: processedTransaction.referenceNumber,
+          processed: true
+        })
 
       // Return the decryption key to the sender
       return res.status(200).json({
-        status: 'Key sucessfully purchased!',
+        status: 'Key sucessfully purchased!', // !!!!!!!!!
         result: key.value
       })
     } catch (e) {
