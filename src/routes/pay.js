@@ -14,7 +14,7 @@ module.exports = {
     orderID: 'abc',
     transaction: 'transaction envelope (rawTx, mapiResponses, inputs, proof), with additional outputs array containing key derivation information',
     'transaction.outputs': 'An array of outputs descriptors, each including vout, satoshis, derivationPrefix(optional, if global not used), and derivationSuffix',
-    derivationPrefix: 'J+m/bd3GBKFf4w==' // Provide the global derivation prefix for the payment
+    derivationPrefix: 'Provide the global derivation prefix for the payment'
   },
   exampleResponse: {
     status: 'Key sucessfully purchased!', // !!!!!!!!!!
