@@ -13,8 +13,8 @@ module.exports = {
     songURL: 'The URL of the song associated with the orderID',
     orderID: 'abc',
     transaction: 'transaction envelope (rawTx, mapiResponses, inputs, proof), with additional outputs array containing key derivation information',
-    'transaction.outputs': 'An array of outputs descriptors, each including vout, satoshis, derivationPrefix, and derivationSuffix',
-    description: 'Transaction description'
+    'transaction.outputs': 'An array of outputs descriptors, each including vout, satoshis, derivationPrefix(optional, if global not used), and derivationSuffix',
+    derivationPrefix: 'Provide the global derivation prefix for the payment'
   },
   exampleResponse: {
     status: 'Key sucessfully purchased!', // !!!!!!!!!!
@@ -67,7 +67,8 @@ module.exports = {
         protocol: '3241645161d8',
         transaction: req.body.transaction,
         senderIdentityKey: req.authrite.identityKey,
-        note: req.body.description,
+        note: `payment for orderID:${req.body.orderID}`,
+        derivationPrefix: req.body.derivationPrefix,
         amount: invoice.amount
       })
       if (!processedTransaction) {
