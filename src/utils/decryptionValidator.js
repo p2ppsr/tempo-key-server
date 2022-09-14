@@ -10,9 +10,9 @@ const { NODE_ENV } = process.env
  * @returns {Boolean} Returns the result of the decryption attempt
  */
 const isValid = async (songURL, key) => {
-  // Sometimes, the NanoStore file is still uploading. We try 5 times, 5 
+  // Sometimes, the NanoStore file is still uploading. We try 5 times, 5
   // seconds apart, to give it time to finish sending the UHRP advertisement.
-  for (let i = 1, i <= 5; i++) {
+  for (let i = 1; i <= 5; i++) {
     try {
       // Fetch the song data
       const { data: encryptedData } = await download({
