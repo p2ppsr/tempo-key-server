@@ -32,14 +32,10 @@ module.exports = {
           })
         }
         // Insert a new key entry
-        [key] = await knex('key').insert({
+        await knex('key').insert({
           songURL: req.body.songURL,
           value: req.body.key
         })
-        if (!key) {
-          // Throw an error to catch and return a 500 response
-          throw new Error('An internal error has occurred.')
-        }
       } else {
         return res.status(400).json({
           status: 'error',
@@ -51,12 +47,12 @@ module.exports = {
         status: 'Key sucessfully published!'
       })
     } catch (e) {
+      console.error(e)
       res.status(500).json({
         status: 'error',
         code: 'ERR_INTERNAL',
         description: 'An internal error has occurred.'
       })
-      console.error(e)
       return null
     }
   }
