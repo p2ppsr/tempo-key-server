@@ -14,10 +14,11 @@
   },
   "license": "Open BSV",
   "dependencies": {
-    "@cwi/crypto": "^0.1.0",
     "@peculiar/webcrypto": "^1.4.0",
     "authrite-express": "^0.1.5",
+    "babbage-bsv": "^0.1.0",
     "body-parser": "^1.20.0",
+    "cwi-crypto": "^0.1.0",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "isomorphic-fetch": "^3.0.0",
@@ -26,10 +27,10 @@
     "nanoseek": "^0.1.2",
     "prettyjson": "^1.2.1",
     "sqlite3": "^5.0.11",
-    "utxoninja": "^0.2.33"
+    "utxoninja": "^0.2.37"
   },
   "devDependencies": {
-    "authrite-js": "^0.1.11",
+    "authrite-js": "^0.1.14",
     "ejs": "^3.1.8",
     "standard": "^17.0.0"
   }

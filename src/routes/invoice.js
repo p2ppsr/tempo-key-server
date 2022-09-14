@@ -3,7 +3,7 @@ const knex =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging'
     ? require('knex')(require('../../knexfile.js').production)
     : require('knex')(require('../../knexfile.js').development)
-const bsv = require('bsv')
+const bsv = require('babbage-bsv')
 
 // TODO: Determine best amount
 const AMOUNT = 100
