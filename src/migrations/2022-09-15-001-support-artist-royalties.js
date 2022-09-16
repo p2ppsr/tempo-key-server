@@ -4,9 +4,10 @@ exports.up = async knex => {
     table.increments('Id')
     table.timestamps()
     table.integer('keyID').unsigned().references('keyID').inTable('key')
-    table.string('referenceNumber').unique() // We need to a way to keep track of the trasaction reference number, right?
+    table.string('artistIdentityKey')
+    table.string('referenceNumber').unique()
     table.integer('amount', 15)
-    table.boolean('paid') // Did the artist recieve their payment? Do we need a processed field as well?
+    table.boolean('paid')
   })
   // Add an artistIdentityKey column to keep track of who owns this song
   await knex.schema.table('key', table => {

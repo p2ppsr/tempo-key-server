@@ -33,7 +33,7 @@ module.exports = {
       // Find valid decryption key
       const [key] = await knex('key').where({
         songURL: req.body.songURL
-      }).select('value', 'keyID')
+      }).select('value', 'keyID', 'artistIdentityKey')
 
       if (!key) {
         return res.status(400).json({
@@ -101,6 +101,13 @@ module.exports = {
           referenceNumber: processedTransaction.referenceNumber,
           processed: true
         })
+
+      await knex('royalty').insert({
+        keyID: key.keyID,
+        artistIdentityKey: key.artistIdentityKey,
+        amount: invoice.amount * 0.85,
+        paid: false
+      })
 
       // Return the decryption key to the sender
       return res.status(200).json({

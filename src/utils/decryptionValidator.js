@@ -17,11 +17,7 @@ const isValid = async (songURL, key) => {
       // Fetch the song data
       const { data: encryptedData } = await download({
         URL: songURL,
-        bridgeportResolvers: NODE_ENV === 'staging'
-          ? ['https://staging-bridgeport.babbage.systems']
-          : NODE_ENV === 'production'
-            ? undefined
-            : ['http://localhost:3103']
+        bridgeportResolvers: ['https://staging-bridgeport.babbage.systems']
       })
       const keyAsBuffer = Buffer.from(key, 'base64')
       const decryptionKey = await global.crypto.subtle.importKey(
