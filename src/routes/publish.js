@@ -18,7 +18,7 @@ module.exports = {
   func: async (req, res) => {
     try {
       // Check if a key entry exists already.
-      let [key] = await knex('key').where({
+      const [key] = await knex('key').where({
         songURL: req.body.songURL
       }).select('value')
       if (!key) {
@@ -34,7 +34,8 @@ module.exports = {
         // Insert a new key entry
         await knex('key').insert({
           songURL: req.body.songURL,
-          value: req.body.key
+          value: req.body.key,
+          artistIdentityKey: req.authrite.identityKey // TODO: Verify they own the song with a certificate authority
         })
       } else {
         return res.status(400).json({
