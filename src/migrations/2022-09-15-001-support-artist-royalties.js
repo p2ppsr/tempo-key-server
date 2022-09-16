@@ -15,4 +15,8 @@ exports.up = async knex => {
 }
 
 exports.down = async knex => {
+  await knex.schema.table('key', table => {
+    table.dropColumn('artistIdentityKey')
+  })
+  await knex.schema.dropTable('royalty')
 }
