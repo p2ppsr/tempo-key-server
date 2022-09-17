@@ -17,7 +17,7 @@ module.exports = {
     derivationPrefix: 'Provide the global derivation prefix for the payment'
   },
   exampleResponse: {
-    status: 'Key sucessfully purchased!', // !!!!!!!!!!
+    status: 'Key sucessfully purchased!',
     result: 'sjfsdofdjffjo'
   },
   func: async (req, res) => {
@@ -103,6 +103,8 @@ module.exports = {
         })
 
       await knex('royalty').insert({
+        created_at: new Date(),
+        updated_at: new Date(),
         keyID: key.keyID,
         artistIdentityKey: key.artistIdentityKey,
         amount: invoice.amount * 0.85,
@@ -111,7 +113,7 @@ module.exports = {
 
       // Return the decryption key to the sender
       return res.status(200).json({
-        status: 'Key sucessfully purchased!', // !!!!!!!!!
+        status: 'Key sucessfully purchased!',
         result: key.value
       })
     } catch (e) {
