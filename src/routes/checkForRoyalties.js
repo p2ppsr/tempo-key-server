@@ -7,13 +7,25 @@ const knex =
     : require('knex')(require('../../knexfile.js').development)
 
 module.exports = {
-  type: 'post',
+  type: 'get',
   path: '/checkForRoyalties',
   knex,
-  summary: 'Use this route to check for royalty payments associated with your published song.',
-  parameters: {
-  },
+  summary: 'Use this route to check for royalty payments associated with your published songs.',
+  parameters: {},
   exampleResponse: {
+    status: 'Royalty payment sent!',
+    transaction: {
+      rawTx: '{valid raw tx}',
+      txid: 'af4bd8af92891c99af7b5be14a7c8f71b482ee0315b1496aff573906ceaa3a5d',
+      mapiResponses: {},
+      note: 'The transaction has been processed and broadcast.',
+      amount: 100,
+      inputs: []
+    },
+    derivationPrefix: '0BCWcCOywvBW/g==',
+    derivationSuffix: '6p4s56lfJELNjQ==',
+    amount: 85,
+    senderIdentityKey: '04b51d497f8c67c1416cfe1a58daa5a576a63eb0b64608922d5c4f98b6a1d9b103f9c42cd08b1376ec1932be02c7debdc5314fa563d383d61f8110a5df910bc719'
   },
   func: async (req, res) => {
     try {
@@ -109,6 +121,11 @@ module.exports = {
       })
     } catch (e) {
       console.error(e)
+      return res.status(500).json({
+        status: 'error',
+        code: 'ERR_INTERNAL',
+        description: 'An internal error has occurred.'
+      })
     }
   }
 }

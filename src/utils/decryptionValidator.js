@@ -2,7 +2,6 @@ const { decrypt } = require('cwi-crypto')
 const { Crypto } = require('@peculiar/webcrypto')
 global.crypto = new Crypto()
 const { download } = require('nanoseek')
-const { NODE_ENV } = process.env
 
 /**
  * @param {string} songURL UHRP url of the song to decrypt
@@ -17,7 +16,11 @@ const isValid = async (songURL, key) => {
       // Fetch the song data
       const { data: encryptedData } = await download({
         URL: songURL,
-        bridgeportResolvers: ['https://staging-bridgeport.babbage.systems']
+        bridgeportResolvers: process.env.NODE_ENV === 'staging'
+          ? ['https://staging-bridgeport.babbage.systems']
+          : process.env.NODE_ENV === 'production'
+            ? undefined
+            : ['http://localhost:3103']
       })
       const keyAsBuffer = Buffer.from(key, 'base64')
       const decryptionKey = await global.crypto.subtle.importKey(

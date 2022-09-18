@@ -117,13 +117,12 @@ module.exports = {
         result: key.value
       })
     } catch (e) {
-      res.status(500).json({
+      console.error(e)
+      return res.status(500).json({
         status: 'error',
         code: 'ERR_INTERNAL',
         description: 'An internal error has occurred.'
       })
-      console.error(e)
-      return null
     }
   }
 }

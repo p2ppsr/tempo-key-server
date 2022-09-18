@@ -1,5 +1,13 @@
 
 exports.up = async knex => {
+  await knex.schema.createTable('outgoingRoyaltyPayment', table => {
+    table.increments('Id')
+    table.timestamps()
+    table.string('transaction')
+    table.string('derivationPrefix', 64)
+    table.string('derivationSuffix', 64)
+    table.bigInteger('amount')
+  })
   await knex.schema.createTable('royalty', table => {
     table.increments('Id')
     table.timestamps()
@@ -8,14 +16,6 @@ exports.up = async knex => {
     table.integer('amount', 15)
     table.boolean('paid')
     table.integer('paymentId').unsigned().references('Id').inTable('outgoingRoyaltyPayment')
-  })
-  await knex.schema.createTable('outgoingRoyaltyPayment', table => {
-    table.increments('Id')
-    table.timestamps()
-    table.string('transaction')
-    table.string('derivationPrefix', 64)
-    table.string('derivationSuffix', 64)
-    table.bigInteger('amount')
   })
   // Add an artistIdentityKey column to keep track of who owns this song
   await knex.schema.table('key', table => {

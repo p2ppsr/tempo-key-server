@@ -49,12 +49,11 @@ module.exports = {
       })
     } catch (e) {
       console.error(e)
-      res.status(500).json({
+      return res.status(500).json({
         status: 'error',
         code: 'ERR_INTERNAL',
         description: 'An internal error has occurred.'
       })
-      return null
     }
   }
 }

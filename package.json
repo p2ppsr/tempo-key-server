@@ -8,6 +8,7 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js --watch .env --watch src --exec \"node\"",
     "build": "node scripts/build.js",
+    "doc": "documentation readme --section=API src/index.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "standard --fix ."
@@ -32,6 +33,7 @@
   "devDependencies": {
     "authrite-js": "^0.1.14",
     "ejs": "^3.1.8",
-    "standard": "^17.0.0"
+    "standard": "^17.0.0",
+    "documentation": "^14.0.0"
   }
 }
