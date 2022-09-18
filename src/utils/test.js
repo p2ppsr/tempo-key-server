@@ -12,6 +12,17 @@ const publishKey = async () => {
   })
   return JSON.parse(Buffer.from(response.body).toString('utf8'))
 }
+const checkForRoyalties = async () => {
+  const response = await new Authrite().request('http://localhost:8080/checkForRoyalties', {
+    body: {
+    },
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  return JSON.parse(Buffer.from(response.body).toString('utf8'))
+}
 // OLD - TODO: Delete
 // const buyKey = async () => {
 //   const response = await new Authrite().request('http://localhost:8080/buy', {
@@ -26,4 +37,4 @@ const publishKey = async () => {
 //   return JSON.parse(Buffer.from(response.body).toString('utf8'))
 // }
 
-module.exports = { publishKey }
+module.exports = { publishKey, checkForRoyalties }

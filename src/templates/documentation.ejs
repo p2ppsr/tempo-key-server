@@ -27,26 +27,31 @@
     <div class='main'>
       <h1>Tempo Key Server</h1>
       <p>
-        TODO
+        Allows tempo users to purchase song decryption keys
       </p>
       <h2>Endpoint Documentation</h2>
-        <% for (let i in routes) { %>
-        <p>
-          <%= routes[i].summary %>
-        </p>
-        <% if (typeof routes[i].parameters === 'object') { %>
-          <h4>Parameters</h4>
-          <ul>
-            <% Object.entries(routes[i].parameters).forEach(([k, v]) => { %>
-              <li><b><%= k %></b>: <%= v %></li>
-            <% }) %>
-          </ul>
+      <% for (let i in routes) { %>
+         <% if (routes[i].hidden !== true) { %>
+          <h3>
+            <b class='method'><%= routes[i].type %></b> <%= routes[i].path %>
+          </h3>
+          <p>
+            <%= routes[i].summary %>
+          </p>
+          <% if (typeof routes[i].parameters === 'object') { %>
+            <h4>Parameters</h4>
+            <ul>
+              <% Object.entries(routes[i].parameters).forEach(([k, v]) => { %>
+                <li><b><%= k %></b>: <%= v %></li>
+              <% }) %>
+            </ul>
+          <% } %>
+          <% if (typeof routes[i].exampleResponse === 'object') { %>
+            <h4>Example Response</h4>
+            <pre><%= JSON.stringify(routes[i].exampleResponse, null, 2) %></pre>
+          <% } %>
         <% } %>
-        <% if (typeof routes[i].exampleResponse === 'object') { %>
-          <h4>Example Response</h4>
-          <pre><%= JSON.stringify(routes[i].exampleResponse, null, 2) %></pre>
-        <% } %>
-      <% } %>
+    <% } %>
     </div>
   </body>
 </html>

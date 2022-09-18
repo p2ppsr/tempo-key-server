@@ -5,6 +5,7 @@ module.exports = {
   postAuthrite: [
     require('./publish'),
     require('./pay'),
-    require('./invoice')
+    require('./invoice'),
+    require('./checkForRoyalties')
   ]
 }

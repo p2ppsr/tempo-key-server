@@ -6,7 +6,7 @@ ejs.renderFile(
   'src/templates/documentation.ejs',
   {
     ...process.env,
-    routes: require('../src/routes')
+    routes: require('../src/routes').postAuthrite
   },
   {},
   (err, res) => {

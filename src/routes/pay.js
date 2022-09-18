@@ -17,7 +17,7 @@ module.exports = {
     derivationPrefix: 'Provide the global derivation prefix for the payment'
   },
   exampleResponse: {
-    status: 'Key sucessfully purchased!', // !!!!!!!!!!
+    status: 'Key sucessfully purchased!',
     result: 'sjfsdofdjffjo'
   },
   func: async (req, res) => {
@@ -33,7 +33,7 @@ module.exports = {
       // Find valid decryption key
       const [key] = await knex('key').where({
         songURL: req.body.songURL
-      }).select('value', 'keyID')
+      }).select('value', 'keyID', 'artistIdentityKey')
 
       if (!key) {
         return res.status(400).json({
@@ -102,19 +102,27 @@ module.exports = {
           processed: true
         })
 
+      await knex('royalty').insert({
+        created_at: new Date(),
+        updated_at: new Date(),
+        keyID: key.keyID,
+        artistIdentityKey: key.artistIdentityKey,
+        amount: invoice.amount * 0.85,
+        paid: false
+      })
+
       // Return the decryption key to the sender
       return res.status(200).json({
-        status: 'Key sucessfully purchased!', // !!!!!!!!!
+        status: 'Key sucessfully purchased!',
         result: key.value
       })
     } catch (e) {
-      res.status(500).json({
+      console.error(e)
+      return res.status(500).json({
         status: 'error',
         code: 'ERR_INTERNAL',
         description: 'An internal error has occurred.'
       })
-      console.error(e)
-      return null
     }
   }
 }
