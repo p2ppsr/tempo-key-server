@@ -27,22 +27,126 @@
     <div class='main'>
       <h1>Tempo Key Server</h1>
       <p>
-        TODO
+        Allows tempo users to purchase song decryption keys
       </p>
       <h2>Endpoint Documentation</h2>
-        
-        <p>
-          
-        </p>
-        
-        
       
-        <p>
+         
+          <h3>
+            <b class='method'>post</b> /publish
+          </h3>
+          <p>
+            Use this route to publish a song decryption key
+          </p>
           
-        </p>
+            <h4>Parameters</h4>
+            <ul>
+              
+                <li><b>songURL</b>: abc</li>
+              
+                <li><b>key</b>: </li>
+              
+            </ul>
+          
+          
+            <h4>Example Response</h4>
+            <pre>{
+  &#34;status&#34;: &#34;Key sucessfully published!&#34;
+}</pre>
+          
         
+    
+         
+          <h3>
+            <b class='method'>post</b> /pay
+          </h3>
+          <p>
+            Use this route to submit proof of payment for a song decryption key
+          </p>
+          
+            <h4>Parameters</h4>
+            <ul>
+              
+                <li><b>songURL</b>: The URL of the song associated with the orderID</li>
+              
+                <li><b>orderID</b>: abc</li>
+              
+                <li><b>transaction</b>: transaction envelope (rawTx, mapiResponses, inputs, proof), with additional outputs array containing key derivation information</li>
+              
+                <li><b>transaction.outputs</b>: An array of outputs descriptors, each including vout, satoshis, derivationPrefix(optional, if global not used), and derivationSuffix</li>
+              
+                <li><b>derivationPrefix</b>: Provide the global derivation prefix for the payment</li>
+              
+            </ul>
+          
+          
+            <h4>Example Response</h4>
+            <pre>{
+  &#34;status&#34;: &#34;Key sucessfully purchased!&#34;,
+  &#34;result&#34;: &#34;sjfsdofdjffjo&#34;
+}</pre>
+          
         
-      
+    
+         
+          <h3>
+            <b class='method'>post</b> /invoice
+          </h3>
+          <p>
+            Requests an invoice for purchasing a song
+          </p>
+          
+            <h4>Parameters</h4>
+            <ul>
+              
+                <li><b>songURL</b>: abc</li>
+              
+            </ul>
+          
+          
+            <h4>Example Response</h4>
+            <pre>{
+  &#34;status&#34;: &#34;success&#34;,
+  &#34;amount&#34;: 1337,
+  &#34;identityKey&#34;: &#34;adfsfdf&#34;,
+  &#34;orderID&#34;: &#34;asdfldsf=s=sfsd&#34;
+}</pre>
+          
+        
+    
+         
+          <h3>
+            <b class='method'>get</b> /checkForRoyalties
+          </h3>
+          <p>
+            Use this route to check for royalty payments associated with your published songs.
+          </p>
+          
+            <h4>Parameters</h4>
+            <ul>
+              
+            </ul>
+          
+          
+            <h4>Example Response</h4>
+            <pre>{
+  &#34;status&#34;: &#34;Royalty payment sent!&#34;,
+  &#34;transaction&#34;: {
+    &#34;rawTx&#34;: &#34;{valid raw tx}&#34;,
+    &#34;txid&#34;: &#34;af4bd8af92891c99af7b5be14a7c8f71b482ee0315b1496aff573906ceaa3a5d&#34;,
+    &#34;mapiResponses&#34;: {},
+    &#34;note&#34;: &#34;The transaction has been processed and broadcast.&#34;,
+    &#34;amount&#34;: 100,
+    &#34;inputs&#34;: []
+  },
+  &#34;derivationPrefix&#34;: &#34;0BCWcCOywvBW/g==&#34;,
+  &#34;derivationSuffix&#34;: &#34;6p4s56lfJELNjQ==&#34;,
+  &#34;amount&#34;: 85,
+  &#34;senderIdentityKey&#34;: &#34;04b51d497f8c67c1416cfe1a58daa5a576a63eb0b64608922d5c4f98b6a1d9b103f9c42cd08b1376ec1932be02c7debdc5314fa563d383d61f8110a5df910bc719&#34;
+}</pre>
+          
+        
+    
     </div>
   </body>
 </html>

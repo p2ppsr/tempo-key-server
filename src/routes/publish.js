@@ -14,6 +14,7 @@ module.exports = {
     key: '' // A 32 byte base64 string.
   },
   exampleResponse: {
+    status: 'Key sucessfully published!'
   },
   func: async (req, res) => {
     try {
