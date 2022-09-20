@@ -3,7 +3,7 @@ exports.up = async knex => {
   await knex.schema.createTable('outgoingRoyaltyPayment', table => {
     table.increments('Id')
     table.timestamps()
-    table.string('transaction')
+    table.text('transaction', 'longtext')
     table.string('derivationPrefix', 64)
     table.string('derivationSuffix', 64)
     table.bigInteger('amount')
