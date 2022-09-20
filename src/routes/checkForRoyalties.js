@@ -1,5 +1,5 @@
 const Ninja = require('utxoninja')
-const bsv = require('bsv')
+const bsv = require('babbage-bsv')
 const { getPaymentAddress } = require('sendover')
 const knex =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging'
