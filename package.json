@@ -16,7 +16,7 @@
   "license": "Open BSV",
   "dependencies": {
     "@peculiar/webcrypto": "^1.4.0",
-    "authrite-express": "^0.2.1",
+    "authrite-express": "^0.2.3",
     "babbage-bsv": "^0.1.0",
     "body-parser": "^1.20.0",
     "cwi-crypto": "^0.1.0",
@@ -27,7 +27,7 @@
     "mysql": "^2.18.1",
     "nanoseek": "^0.1.2",
     "prettyjson": "^1.2.1",
-    "sqlite3": "^5.1.1",
+    "sqlite3": "^5.1.2",
     "utxoninja": "^0.2.38"
   },
   "devDependencies": {
