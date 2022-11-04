@@ -7,7 +7,6 @@ on:
 
 env:
   CURRENT_BRANCH: ${{ github.ref_name =='production' && 'production' || 'master' }}
-  CWI_NPM_TOKEN: ${{ secrets.CWI_NPM_TOKEN }}
   GCR_HOST: us.gcr.io
   GOOGLE_PROJECT_ID: babbage-private
   GCR_IMAGE_NAME: tempo-key-server
@@ -18,11 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - run: npm ci
-      - run: npm run build
       - uses: RafikFarhad/push-to-gcr-github-action@v4.1
         with:
           gcloud_service_key: ${{ secrets.DOCKER_REGISTRY_PUSH_KEY }}
