@@ -66,10 +66,10 @@ module.exports = {
         ))
       ).toHex()
       // Create a new output to spend
-      const output = {
+      const outputs = [{
         script,
         satoshis: totalAmount
-      }
+      }]
       // Create a new transaction with Ninja which pays the output
       const ninja = new Ninja({
         privateKey: process.env.SERVER_PRIVATE_KEY,
@@ -79,7 +79,7 @@ module.exports = {
       })
 
       const transaction = await ninja.getTransactionWithOutputs({
-        outputs: [output],
+        outputs,
         note: 'Sent royalty payment to artist.'
       })
 

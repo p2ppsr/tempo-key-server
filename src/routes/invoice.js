@@ -6,7 +6,7 @@ const knex =
 const bsv = require('babbage-bsv')
 
 // TODO: Determine best amount
-const AMOUNT = 100
+const AMOUNT = 10000
 
 const { SERVER_PRIVATE_KEY } = process.env
 

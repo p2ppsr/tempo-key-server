@@ -98,7 +98,7 @@ module.exports = {
           processed: false
         })
         .update({
-          referenceNumber: processedTransaction.referenceNumber,
+          referenceNumber: processedTransaction.reference,
           processed: true
         })
 
