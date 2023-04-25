@@ -15,12 +15,12 @@ const isValid = async (songURL, key) => {
     try {
       // Fetch the song data
       const { data: encryptedData } = await download({
-        URL: songURL,
-        confederacyURL: process.env.NODE_ENV === 'staging'
-          ? ['https://staging-confederacy.babbage.systems']
+        UHRPUrl: songURL,
+        confederacyHost: process.env.NODE_ENV === 'staging'
+          ? 'https://staging-confederacy.babbage.systems'
           : process.env.NODE_ENV === 'production'
             ? undefined
-            : ['http://localhost:3103']
+            : 'http://localhost:3103'
       })
       const keyAsBuffer = Buffer.from(key, 'base64')
       const decryptionKey = await global.crypto.subtle.importKey(
