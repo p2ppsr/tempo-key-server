@@ -16,8 +16,8 @@ const isValid = async (songURL, key) => {
       // Fetch the song data
       const { data: encryptedData } = await download({
         URL: songURL,
-        bridgeportResolvers: process.env.NODE_ENV === 'staging'
-          ? ['https://staging-bridgeport.babbage.systems']
+        confederacyURL: process.env.NODE_ENV === 'staging'
+          ? ['https://staging-confederacy.babbage.systems']
           : process.env.NODE_ENV === 'production'
             ? undefined
             : ['http://localhost:3103']
