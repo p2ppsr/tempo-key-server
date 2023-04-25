@@ -1,17 +1,19 @@
 services:
-  # tempo-key-server
   tempo-key-server:
-      platform: linux/x86_64
-      hostname: 'tempo-key-server'
+      # hostname: 'tempo-key-server'
       build: .
+      container_name: "tempo-key-server"
+      depends_on: 
+        - tempo-key-server-mysql
       restart: always
-      volumes:
-      - './data/tempo-key-server-mysql-data:/var/lib/mysql'
+      # volumes:
+      #   - "./src:/app/src"
       ports:
-      - 8080:8080
+        - 8080:8080
       environment:
         NODE_ENV: staging
         HTTP_PORT: 8080
+        PORT: 3102
         KNEX_DB_CONNECTION: '{"port":"3002","host":"tempo-key-server-mysql","database":"tempo-key-server","user":"root","password":"test"}'
         KNEX_DB_CLIENT: mysql
         MIGRATE_KEY: my-grate-key
@@ -27,9 +29,9 @@ services:
     command: '--default-authentication-plugin=mysql_native_password --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync'
     restart: always
     volumes:
-      - './data/tempo-key-server-mysql-data:/var/lib/mysql'
+      - './data/mysql-data:/var/lib/mysql'
     environment:
-      MYSQL_HOST: "127.0.0.1"
+      # MYSQL_HOST: "127.0.0.1"
       MYSQL_TCP_PORT: 3002
       MYSQL_ROOT_PASSWORD: "test"
       MYSQL_DATABASE: "tempo-key-server"
