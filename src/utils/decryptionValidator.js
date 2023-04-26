@@ -20,7 +20,8 @@ const isValid = async (songURL, key) => {
           ? 'https://staging-confederacy.babbage.systems'
           : process.env.NODE_ENV === 'production'
             ? undefined
-            : 'http://localhost:3103'
+            : 'https://staging-confederacy.babbage.systems',
+          clientPrivateKey: process.env.SERVER_PRIVATE_KEY
       })
       const keyAsBuffer = Buffer.from(key, 'base64')
       const decryptionKey = await global.crypto.subtle.importKey(

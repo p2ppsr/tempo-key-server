@@ -13,7 +13,7 @@ services:
       environment:
         NODE_ENV: staging
         HTTP_PORT: 8080
-        PORT: 3102
+        PORT: 8080
         KNEX_DB_CONNECTION: '{"port":"3002","host":"tempo-key-server-mysql","database":"tempo-key-server","user":"root","password":"test"}'
         KNEX_DB_CLIENT: mysql
         MIGRATE_KEY: my-grate-key

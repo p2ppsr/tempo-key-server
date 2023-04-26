@@ -25,7 +25,7 @@
     "isomorphic-fetch": "^3.0.0",
     "knex": "^2.3.0",
     "mysql": "^2.18.1",
-    "nanoseek": "^0.1.10",
+    "nanoseek": "^0.1.12",
     "prettyjson": "^1.2.1",
     "sqlite3": "^5.1.2",
     "utxoninja": "^0.2.49"
