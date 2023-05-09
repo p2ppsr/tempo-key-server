@@ -18,6 +18,13 @@ module.exports = {
   },
   func: async (req, res) => {
     try {
+      if (!req.body.songURL || !req.body.key) {
+        return res.status(400).json({
+          status: 'error',
+          code: 'ERR_INVALID_PARAMS',
+          description: 'Must provide valid parameters'
+        })
+      }
       // Check if a key entry exists already.
       const [key] = await knex('key').where({
         songURL: req.body.songURL

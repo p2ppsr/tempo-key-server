@@ -11,6 +11,10 @@ const { download } = require('nanoseek')
 const isValid = async (songURL, key) => {
   // Sometimes, the NanoStore file is still uploading. We try 5 times, 5
   // seconds apart, to give it time to finish sending the UHRP advertisement.
+  if (!songURL || !key){
+    return false
+  }
+
   for (let i = 1; i <= 5; i++) {
     try {
       // Fetch the song data
