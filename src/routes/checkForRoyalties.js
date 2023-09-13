@@ -1,4 +1,4 @@
-const Ninja = require('utxoninja')
+const { Ninja } = require('ninja-base')
 const bsv = require('babbage-bsv')
 const { getPaymentAddress } = require('sendover')
 const knex =

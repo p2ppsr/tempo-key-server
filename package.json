@@ -26,9 +26,9 @@
     "knex": "^2.3.0",
     "mysql": "^2.18.1",
     "nanoseek": "^0.1.12",
+    "ninja-base": "^0.2.24",
     "prettyjson": "^1.2.1",
-    "sqlite3": "^5.1.2",
-    "utxoninja": "^0.2.49"
+    "sqlite3": "^5.1.2"
   },
   "devDependencies": {
     "authrite-js": "^0.2.14",

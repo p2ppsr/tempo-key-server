@@ -1,4 +1,4 @@
-const Ninja = require('utxoninja')
+const { Ninja } = require('ninja-base')
 const knex =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging'
     ? require('knex')(require('../../knexfile.js').production)
