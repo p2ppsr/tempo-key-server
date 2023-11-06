@@ -16,7 +16,7 @@
   "license": "Open BSV",
   "dependencies": {
     "@peculiar/webcrypto": "^1.4.0",
-    "authrite-express": "^0.2.4",
+    "authrite-express": "^0.3.0",
     "babbage-bsv": "^0.1.1",
     "body-parser": "^1.20.0",
     "cwi-crypto": "^0.1.3",
@@ -31,7 +31,7 @@
     "sqlite3": "^5.1.2"
   },
   "devDependencies": {
-    "authrite-js": "^0.2.14",
+    "authrite-js": "^0.3.2",
     "documentation": "^14.0.0",
     "ejs": "^3.1.8",
     "standard": "^17.0.0"
