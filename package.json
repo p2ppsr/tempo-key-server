@@ -1,6 +1,6 @@
 {
   "name": "tempo-key-server",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Allows tempo users to purchase song decryption keys",
   "main": "index.js",
   "private": true,
