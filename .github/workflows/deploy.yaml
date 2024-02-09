@@ -45,4 +45,4 @@ jobs:
           metadata: "service.${{ env.CURRENT_BRANCH }}.yaml"
       - name: Set Min Instances and Enable CPU Boost
         run: |
-          gcloud run services update ${{ env.CURRENT_BRANCH =='production' && 'prod-tempo-keyserver' || 'staging-tempo-keyserver' }} --min-instances=1 --cpu-boost --region=us-west1
+          gcloud run services update ${{ env.CURRENT_BRANCH =='production' && 'prod-tempo-keyserver' || 'staging-tempo-keyserver' }} --min-instances=1 --cpu-boost
