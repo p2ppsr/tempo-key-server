@@ -4,6 +4,14 @@ const knex =
     ? require('knex')(require('../../knexfile.js').production)
     : require('knex')(require('../../knexfile.js').development)
 
+// Create a new ninja for the server
+const ninja = new Ninja({
+  privateKey: process.env.SERVER_PRIVATE_KEY,
+  config: {
+    dojoURL: process.env.DOJO_URL
+  }
+})
+
 module.exports = {
   type: 'post',
   path: '/pay',
@@ -22,14 +30,6 @@ module.exports = {
   },
   func: async (req, res) => {
     try {
-      // Create a new ninja for the server
-      const ninja = new Ninja({
-        privateKey: process.env.SERVER_PRIVATE_KEY,
-        config: {
-          dojoURL: process.env.DOJO_URL
-        }
-      })
-
       // Find valid decryption key
       const [key] = await knex('key').where({
         songURL: req.body.songURL
