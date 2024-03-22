@@ -8,7 +8,7 @@ const ROUTING_PREFIX = process.env.ROUTING_PREFIX || ''
 const authrite = require('authrite-express')
 
 const app = express()
-app.use(bodyparser.json())
+app.use(bodyparser.json({ limit: '1gb', type: 'application/json' }))
 
 // This ensures that HTTPS is used unless you are in development mode
 app.use((req, res, next) => {
