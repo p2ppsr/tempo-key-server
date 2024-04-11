@@ -107,7 +107,7 @@ module.exports = {
         updated_at: new Date(),
         keyID: key.keyID,
         artistIdentityKey: key.artistIdentityKey,
-        amount: invoice.amount * 0.85,
+        amount: invoice.amount * 0.97,
         paid: false
       })
 
